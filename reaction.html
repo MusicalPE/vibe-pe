@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>반응 놀이</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:#1F2A37;color:#FAF7F0;height:100vh;overflow:hidden;user-select:none}
+#setup{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4vh;padding:20px}
+h1{font-size:clamp(32px,5vw,64px);font-weight:900}
+.legend{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;width:min(1100px,95vw)}
+.legend div{border-radius:18px;padding:3vh 10px;text-align:center;font-size:clamp(20px,3vw,40px);font-weight:900;color:#fff}
+.legend small{display:block;font-size:.55em;opacity:.9;margin-bottom:.3em}
+.row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+button{font:inherit;font-size:clamp(18px,2.4vw,30px);font-weight:800;padding:.55em 1.3em;border-radius:14px;cursor:pointer;border:3px solid #FAF7F0;background:transparent;color:#FAF7F0}
+button.on{background:#FAF7F0;color:#1F2A37}
+button.go{background:#E8664A;border-color:#E8664A;color:#fff}
+#stage{display:none;position:fixed;inset:0;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:clamp(120px,32vw,460px)}
+#stop{position:fixed;right:20px;bottom:20px;display:none;font-size:18px;padding:.4em 1em;background:rgba(0,0,0,.35);border-color:rgba(255,255,255,.6)}
+</style></head><body>
+<div id="setup">
+<h1>반응 놀이</h1>
+<div class="legend" id="legend"></div>
+<div class="row" id="speeds"><button data-ms="3000">느림</button><button data-ms="2000" class="on">보통</button><button data-ms="1200">빠름</button></div>
+<button class="go" id="start">시작</button>
+</div>
+<div id="stage"></div>
+<button id="stop">그만하기</button>
+<script>
+const COLORS=[{n:'빨강',c:'#E53935',a:'앉기'},{n:'노랑',c:'#F9B800',a:'점프'},{n:'초록',c:'#2E9E4F',a:'제자리 달리기'},{n:'파랑',c:'#1E6FD9',a:'멈춤'}];
+const $=id=>document.getElementById(id);let ms=2000,loop=null,last=-1,cd=null;
+$('legend').innerHTML=COLORS.map(x=>`<div style="background:${x.c}"><small>${x.n}</small>${x.a}</div>`).join('');
+document.querySelectorAll('#speeds button').forEach(b=>b.onclick=()=>{document.querySelectorAll('#speeds button').forEach(x=>x.classList.remove('on'));b.classList.add('on');ms=+b.dataset.ms});
+function next(){let i;do{i=Math.floor(Math.random()*COLORS.length)}while(i===last);last=i;$('stage').style.background=COLORS[i].c;$('stage').textContent=''}
+function stop(){clearInterval(loop);clearInterval(cd);loop=cd=null;$('stage').style.display='none';$('stop').style.display='none';$('setup').style.display='flex'}
+$('start').onclick=()=>{$('setup').style.display='none';const s=$('stage');s.style.display='flex';s.style.background='#1F2A37';$('stop').style.display='block';
+ let n=3;s.textContent=n;cd=setInterval(()=>{n--;if(n>0){s.textContent=n}else{clearInterval(cd);cd=null;last=-1;next();loop=setInterval(next,ms)}},1000)};
+$('stop').onclick=stop;document.addEventListener('keydown',e=>{if(e.key==='Escape')stop()});
+</script></body></html>

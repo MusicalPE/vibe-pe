@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>바이브코딩 체육 수업 예시</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:#FAF7F0;color:#1F2A37}
+header{background:#1F2A37;color:#FAF7F0;padding:40px 24px 32px}
+.w{max-width:880px;margin:0 auto}
+.k{color:#F29A84;font-weight:700;font-size:14px}
+h1{font-size:clamp(26px,5vw,40px);font-weight:900;margin:8px 0}
+header p{color:#BFC7D1;line-height:1.6}
+main{padding:28px 24px 40px}
+.card{background:#FFFDF8;border:1px solid #E6DFD0;border-radius:16px;padding:20px 22px;margin-bottom:14px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.card div{flex:1;min-width:220px}
+.card h2{font-size:21px;font-weight:900;margin-bottom:4px}
+.card p{color:#4B5563;font-size:15px;line-height:1.55}
+.card a{display:inline-block;text-decoration:none;font-weight:800;padding:.6em 1.1em;border-radius:10px;font-size:16px}
+a.open{background:#E8664A;color:#fff}
+a.dl{border:2px solid #1F2A37;color:#1F2A37;margin-left:6px}
+.note{background:#F0EBDF;border-radius:12px;padding:14px 18px;font-size:14.5px;line-height:1.65;color:#3D4654;margin-top:22px}
+footer{text-align:center;color:#6B7280;font-size:13px;padding:0 0 30px}
+</style></head><body>
+<header><div class="w"><p class="k">바이브코딩과 함께하는 체육교육</p><h1>체육 수업 예시 도구</h1>
+<p>클로드에게 말로 설명해서 만든 체육 수업 도구입니다. 열어서 써 보시고, 내려받아 선생님 수업에 맞게 고쳐 쓰셔도 됩니다.</p></div></header>
+<main class="w" id="list"></main>
+<div class="w" style="padding:0 24px"><p class="note"><b>내려받아 고치는 법</b><br>‘내려받기’로 파일을 저장한 뒤 클로드 새 대화에 파일을 올리고 “이 파일에서 ○○만 바꿔 줘”처럼 한 가지씩 말하면 됩니다. 내려받은 파일은 인터넷 없이도 더블클릭으로 열립니다.</p></div>
+<footer><br>음악적체육인</footer>
+<script>
+// 새 예시 자료는 아래 목록에 한 줄씩 더하면 됩니다.
+const ITEMS=[
+ {file:'timer.html',name:'체육 수업 타이머',desc:'1분·3분·5분, 강당 뒤에서도 보이는 큰 숫자, 끝나면 호루라기 소리와 깜빡임.'},
+ {file:'team.html',name:'공정한 팀 나누기',desc:'학생1~학생24 예시 명단. 잘함·보통·연습 중을 표시하면 2~4팀에 고르게 섞어 팀 색깔 카드로 보여 줍니다.'},
+ {file:'reaction.html',name:'반응 놀이 화면',desc:'빨강 앉기, 노랑 점프, 초록 제자리 달리기, 파랑 멈춤. 느림·보통·빠름, 시작 전 3, 2, 1.'}
+];
+document.getElementById('list').innerHTML=ITEMS.map(x=>`<div class="card"><div><h2>${x.name}</h2><p>${x.desc}</p></div><span><a class="open" href="${x.file}">열기</a><a class="dl" href="${x.file}" download>내려받기</a></span></div>`).join('');
+</script></body></html>

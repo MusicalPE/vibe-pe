@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>체육 수업 타이머</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:#1F2A37;color:#FAF7F0;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4vh;user-select:none;transition:background .15s}
+body.flash{background:#E8664A}
+h1{font-size:clamp(18px,3vw,34px);color:#BFC7D1;font-weight:700}
+#time{font-size:clamp(120px,30vw,420px);font-weight:900;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+button{font:inherit;font-size:clamp(18px,2.4vw,30px);font-weight:800;padding:.55em 1.3em;border:0;border-radius:14px;cursor:pointer;background:#FAF7F0;color:#1F2A37}
+button.pre{background:transparent;color:#FAF7F0;border:3px solid #FAF7F0}
+button.pre.on{background:#FAF7F0;color:#1F2A37}
+button.go{background:#E8664A;color:#fff}
+#msg{font-size:clamp(28px,5vw,72px);font-weight:900;min-height:1.2em}
+</style></head><body>
+<h1>체육 수업 타이머</h1>
+<div class="row" id="presets">
+<button class="pre" data-s="60">1분</button><button class="pre on" data-s="180">3분</button><button class="pre" data-s="300">5분</button>
+</div>
+<div id="time">3:00</div>
+<div id="msg"></div>
+<div class="row">
+<button class="go" id="start">시작</button><button id="pause">멈춤</button><button id="reset">다시 시작</button>
+</div>
+<script>
+let total=180,left=180,timer=null,flashT=null,ac=null;
+const $=id=>document.getElementById(id);
+function show(){const m=Math.floor(left/60),s=left%60;$('time').textContent=m+':'+String(s).padStart(2,'0')}
+function stopFlash(){clearInterval(flashT);flashT=null;document.body.classList.remove('flash');$('msg').textContent=''}
+function whistle(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+ const t=ac.currentTime;[0,0.45].forEach(d=>{const o=ac.createOscillator(),l=ac.createOscillator(),lg=ac.createGain(),g=ac.createGain();
+ o.type='square';o.frequency.value=2900;l.frequency.value=38;lg.gain.value=180;l.connect(lg);lg.connect(o.frequency);
+ g.gain.setValueAtTime(0,t+d);g.gain.linearRampToValueAtTime(.18,t+d+.02);g.gain.setValueAtTime(.18,t+d+.32);g.gain.linearRampToValueAtTime(0,t+d+.38);
+ o.connect(g);g.connect(ac.destination);o.start(t+d);l.start(t+d);o.stop(t+d+.4);l.stop(t+d+.4)})}catch(e){}}
+function end(){clearInterval(timer);timer=null;whistle();$('msg').textContent='끝!';let n=0;
+ flashT=setInterval(()=>{document.body.classList.toggle('flash');if(++n>=12){clearInterval(flashT);flashT=null;document.body.classList.remove('flash')}},300)}
+function tick(){left--;show();if(left<=0)end()}
+$('start').onclick=()=>{if(timer)return;stopFlash();if(ac&&ac.state==='suspended')ac.resume();if(left<=0)left=total;show();timer=setInterval(tick,1000)};
+$('pause').onclick=()=>{clearInterval(timer);timer=null};
+$('reset').onclick=()=>{clearInterval(timer);timer=null;stopFlash();left=total;show()};
+document.querySelectorAll('.pre').forEach(b=>b.onclick=()=>{document.querySelectorAll('.pre').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+ clearInterval(timer);timer=null;stopFlash();total=left=+b.dataset.s;show()});
+show();
+</script></body></html>
